@@ -12,6 +12,10 @@ After having conducted meaningful exploration of our chosen data set, we set out
 
 ### Problem
 
+When we come to dataset with pre-conceived notions about what that dataset contains, we risk losing the opportunity to gain real insights from the data itself.
+
+How do we understand a complex data set without relying on the summaries and opinions of others (statisticians, researchers and data scientists)? How do we tease out the structure of the data while relying solely on the data itself?
+
 ### Data
 
 Starting with the following source files, we create the useful meta-data described below.

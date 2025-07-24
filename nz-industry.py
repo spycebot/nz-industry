@@ -19,6 +19,7 @@ timestamp = datetime.now().isoformat(timespec='seconds')
 print(f'Loading data set ({timestamp}):', local_file_path, sep='\n')
 data = pd.read_csv('annual-enterprise-survey-2024-financial-year-provisional.csv')
 print('Sanity check: data.shape', data.shape)
+data_regression_tabulation = pd.DataFrame()
 
 # Total income subset: Select rows denoting Total Income
 total_income = data.loc[data['Variable_name'] == 'Total income']
@@ -54,6 +55,13 @@ for industry in total_income['Industry_name_NZSIOC'].unique():
         # Conditional add to graphical representation of contracting industries
         if trend == 'contracting':
             ax.plot(industry_subset_x, industry_subset_y, label=industry)
+        # We can do better
+        new_industry_row = {"Industry Name": industry, "Slope": industry_subset_lr.slope, "Trend": trend, "Year" : industry_subset.iloc[0, 0], "Value": industry_subset.iloc[0, 8]}
+        # print(new_industry_row)
+        data_regression_tabulation = data_regression_tabulation._append(new_industry_row, ignore_index=True)
+data_regression_tabulation = data_regression_tabulation.drop([0])
+data_regression_tabulation = data_regression_tabulation.sort_values(by=['Slope'], ascending=False)
+print(data_regression_tabulation)
 
 # Labeling on graphical representation of contracting industries
 ax.set_ylabel('Year')
@@ -61,15 +69,6 @@ ax.set_ylabel('Million NZ Dollars')
 ax.set_title("NZ Contracting Industries")
 ax.legend()
 plt.show()
-
-
-'''# Conclusion: "Food product manufacturing" is not a proper category;
-# "Food Product Manufacturing" is the actual category
-print(total_income.columns)
-test_query = total_income.query('Industry_name_NZSIOC == "Food product manufacturing"')
-print(test_query[['Year', 'Value']])
-print(test_query['Year'].describe())
-print(test_query['Value'].describe())'''
 
 # Graph top industries (in growth trend)
 fig, ax = plt.subplots()
@@ -88,10 +87,11 @@ ax.set_title("NZ Top Industries (2024)")
 ax.legend()
 plt.show()
 
-# Output the winners (to 20) and losers (all in downward trend)
+
+'''# Output the winners (to 20) and losers (all in downward trend)
 top_20_names = list(top_industries['Industry_name_NZSIOC'])
 # print('Top 20 Names:', top_20_names, '\n')
-print('='*10, 'Trends Dictionary - Growing Industries', sep='\n')
+print('='*10, 'Trends Dictionary - Top 20 Growing Industries', sep='\n')
 for ind, tre in industry_trends.items():
     if ind in top_20_names:
         print(ind, "is in a", tre, "trend")
@@ -99,7 +99,9 @@ for ind, tre in industry_trends.items():
 print('='*10, 'Trends Dictionary - Contracting Industries', sep='\n')
 for ind, tre in industry_trends.items():
     if tre == 'contracting':
-        print(ind, "is in a", tre, "trend")
+        print(ind, "is in a", tre, "trend")'''
+
+
 
 # That is a wrap
 timestamp = datetime.now().isoformat(timespec='seconds')
